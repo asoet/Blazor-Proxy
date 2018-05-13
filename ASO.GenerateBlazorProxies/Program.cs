@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using ASO.GenerateBlazorProxies.MVC;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.TestHost;
-using TwillioCallFlow.Server;
+using ASO.BlazorProxiesTest;
 
 namespace ASO.GenerateBlazorProxies
 {
@@ -22,12 +22,7 @@ namespace ASO.GenerateBlazorProxies
 
         public static async Task GenerateMVC(string[] args)
         {
-            var testServer = new TestServer(new WebHostBuilder().ConfigureServices(services => {
-                services.AddSingleton<IApiDescriptionGroupCollectionProvider, ApiDescriptionGroupCollectionProvider>();
-                services.TryAddEnumerable(
-                    ServiceDescriptor.Transient<IApiDescriptionProvider, DefaultApiDescriptionProvider>());
-
-            })
+            var testServer = new TestServer(new WebHostBuilder()
             .UseStartup<Startup>());
             var apiModel = testServer.Host.Services.GetService<IApiDescriptionGroupCollectionProvider>();
             if (apiModel == null)
