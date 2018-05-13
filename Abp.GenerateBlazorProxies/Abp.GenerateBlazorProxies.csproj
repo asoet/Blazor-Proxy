@@ -3,6 +3,13 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <Authors>Allard Soeters</Authors>
+    <Company>ASO</Company>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Description>Genereate ABP proxies for Blazor</Description>
+    <RepositoryUrl>https://github.com/asoet/Abp-Blazor-Proxy</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>ABP,Blazor,aspnet,core,.net</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
