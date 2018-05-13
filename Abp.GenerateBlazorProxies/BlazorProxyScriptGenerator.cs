@@ -27,6 +27,7 @@ namespace Abp.GenerateBlazorProxies
             script.AppendLine();
             script.AppendLine("using Microsoft.AspNetCore.Blazor;");
             script.AppendLine("using System.Net.Http;");
+            script.AppendLine("using Abp.Shared;");
             GetNameSpaces(script, model);
             script.AppendLine();
 

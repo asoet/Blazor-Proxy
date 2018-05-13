@@ -36,7 +36,9 @@ namespace Abp.GenerateBlazorProxies
             Console.WriteLine($"FileName {proxyFile}");
             await File.WriteAllTextAsync(proxyFile, script);
             Console.WriteLine("Proxy file written");
-            File.Copy(Path.Combine(Environment.CurrentDirectory, "ABPResult.cs"), Path.Combine(proxyFileNameLocation, "ABPResult.cs"));
+            var newAbpResultPath = Path.Combine(proxyFileNameLocation, "ABPResult.cs");
+            if (!File.Exists(newAbpResultPath))
+                File.Copy(Path.Combine(Environment.CurrentDirectory, "ABPResult.cs"), newAbpResultPath);
             Console.WriteLine("ABPResult file written");
         }
     }
