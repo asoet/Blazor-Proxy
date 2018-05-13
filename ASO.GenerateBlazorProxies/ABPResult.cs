@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Abp.Shared
+namespace ASO.Shared
 {
     public class ABPResult<TResult>
     {

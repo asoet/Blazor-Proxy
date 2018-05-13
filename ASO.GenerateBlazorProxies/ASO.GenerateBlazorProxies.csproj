@@ -6,13 +6,10 @@
     <Authors>Allard Soeters</Authors>
     <Company>ASO</Company>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Description>Genereate ABP proxies for Blazor</Description>
+    <Description>Genereate MVC proxies for Blazor</Description>
     <RepositoryUrl>https://github.com/asoet/Abp-Blazor-Proxy</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>ABP,Blazor,aspnet,core,.net</PackageTags>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
@@ -27,11 +24,20 @@
     </Content>
   </ItemGroup>
 
+
   <ItemGroup>
-    <PackageReference Include="Abp.Web.Api" Version="3.6.1" />
+  <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="2.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.0.3" />
   </ItemGroup>
-  
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\ASO.BlazorProxiesTest\ASO.BlazorProxiesTest.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <Compile Update="ABPResult.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

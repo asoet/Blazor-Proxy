@@ -6,3 +6,4 @@ obj
 packages
 .vs
 Abp.GenerateBlazorProxies/Properties/launchSettings.json
+ASO.GenerateBlazorProxies/Properties/launchSettings.json

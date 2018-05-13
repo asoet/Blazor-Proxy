@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Abp.Reflection
+namespace ASO.Reflection
 {
     /// <summary>
     /// Some simple type-checking methods used internally.
