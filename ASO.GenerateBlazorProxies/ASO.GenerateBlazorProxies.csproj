@@ -18,6 +18,9 @@
     <PackageType>DotnetCliTool</PackageType>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>0.1.2</Version>
+    <PackageProjectUrl>https://github.com/asoet/Abp-Blazor-Proxy</PackageProjectUrl>
+    <ToolCommandName>blazorproxy</ToolCommandName>
+    <!--<PackAsTool>true</PackAsTool>-->
   </PropertyGroup>
 
   <ItemGroup>
