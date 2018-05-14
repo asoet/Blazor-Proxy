@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using Microsoft.Extensions.DependencyModel;
+using NuGet.Configuration;
 
 namespace ASO.GenerateBlazorProxies.Helpers
 {
@@ -19,35 +22,39 @@ namespace ASO.GenerateBlazorProxies.Helpers
             AssemblyLoadContext.Default.Resolving += (context, name) =>
             {
                 // avoid loading *.resources dlls, because of: https://github.com/dotnet/coreclr/issues/8416
-                if (name.Name.EndsWith("resources", StringComparison.Ordinal))
+                if (name.Name.EndsWith("resources"))
                 {
                     return null;
                 }
-
-                var dependencies = DependencyContext.Default.RuntimeLibraries;
+                var depContext = DependencyContext.Default;
+                var dependencies = depContext.RuntimeLibraries;
                 foreach (var library in dependencies)
                 {
                     if (IsCandidateLibrary(library, name))
                     {
-                        return context.LoadFromAssemblyName(new AssemblyName(library.Name));
+                        var a = context.LoadFromAssemblyPath(library.Path);
+                        return a;
                     }
                 }
+                
+                //Get local nuget cache
+                var settings = Settings.LoadDefaultSettings(null);
+                var nugetCache = SettingsUtility.GetGlobalPackagesFolder(settings);
 
-				var foundDlls = Directory.GetFileSystemEntries(new FileInfo(directory).FullName, name.Name + ".dll", SearchOption.AllDirectories);
+                IEnumerable<string> foundDlls = Directory.GetFileSystemEntries(new FileInfo(directory).FullName, name.Name + ".dll", SearchOption.AllDirectories);
+                foundDlls = foundDlls.Concat(Directory.GetFileSystemEntries(nugetCache, name.Name + ".dll", SearchOption.AllDirectories));
                 if (foundDlls.Any())
                 {
-                    return context.LoadFromAssemblyPath(foundDlls[0]);
+                    return context.LoadFromAssemblyPath(foundDlls.First());
                 }
-				var a = context.LoadFromAssemblyName(name);
-				return a;
+				return context.LoadFromAssemblyName(name);
             };
             return assembly;
         }
 
-        private static bool IsCandidateLibrary(RuntimeLibrary library, AssemblyName assemblyName)
+        private static bool IsCandidateLibrary(Library library, AssemblyName assemblyName)
         {
-            return (library.Name == (assemblyName.Name))
-                    || (library.Dependencies.Any(d => d.Name.StartsWith(assemblyName.Name, StringComparison.Ordinal)));
+            return (library.Name == (assemblyName.Name) || library.Dependencies.Any(d => d.Name == assemblyName.Name));
         }
 
     }

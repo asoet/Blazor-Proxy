@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.TestHost;
 using ASO.GenerateBlazorProxies.Helpers;
 using System.Collections.Generic;
 using NDesk.Options;
+using System.Reflection;
 
 namespace ASO.GenerateBlazorProxies
 {
@@ -53,7 +54,31 @@ namespace ASO.GenerateBlazorProxies
                 Console.WriteLine("Try `--help' for more information.");
                 return;
             }
-			await GenerateMVC();
+            if (string.IsNullOrEmpty(TargetAssembly))
+            {
+                Console.WriteLine("Not targetAssembly found");
+                Console.WriteLine("Try `--help' for more information.");
+                return;
+            }
+            if (string.IsNullOrEmpty(TargetBasePathForFiles))
+            {
+                TargetBasePathForFiles = Directory.GetDirectoryRoot(TargetAssembly);
+                Console.WriteLine("Not targetAssembly found");
+                Console.WriteLine("Using targetAssembly path");
+            }
+            if (string.IsNullOrEmpty(OutputDir))
+            {
+                OutputDir = Directory.GetDirectoryRoot(TargetAssembly);
+                Console.WriteLine("Not OutputDir found");
+                Console.WriteLine("Try `--help' for more information.");
+                return;
+            }
+            if (string.IsNullOrEmpty(OutputAssembly))
+            {
+                Console.WriteLine("Not OutputAssembly found");
+                Console.WriteLine("skip check for exisiting types");
+            }
+            await GenerateMVC();
         }
       
         public static async Task GenerateMVC()
@@ -65,8 +90,11 @@ namespace ASO.GenerateBlazorProxies
 				return;
 			try
 			{
-				var testServer = new TestServer(new WebHostBuilder()
-                                            .UseStartup(startUpType));
+				var testServer = new TestServer(new WebHostBuilder().ConfigureServices(services => {
+                    services.TryAddSingleton<IApiDescriptionGroupCollectionProvider, ApiDescriptionGroupCollectionProvider>();
+                    services.TryAddEnumerable(
+                        ServiceDescriptor.Transient<IApiDescriptionProvider, DefaultApiDescriptionProvider>());
+                 }).UseStartup(startUpType));
                 var apiModel = testServer.Host.Services.GetService<IApiDescriptionGroupCollectionProvider>();
                 if (apiModel == null)
                 {
@@ -98,12 +126,15 @@ namespace ASO.GenerateBlazorProxies
 
         }
 
-		public static void FindAndCopyCustomFiles(IEnumerable<Type> types, IEnumerable<string> namespaces, string basePath){
-			var outputAssembly = AssemblyLoader.LoadFromAssemblyPath(OutputAssembly);
+		public static void FindAndCopyCustomFiles(IEnumerable<Type> types, IEnumerable<string> namespaces, string basePath)
+        {
+            Assembly outputAssembly = null;
+            if (!string.IsNullOrEmpty(OutputAssembly))
+                outputAssembly = AssemblyLoader.LoadFromAssemblyPath(OutputAssembly);
 			var customFiles = new List<CustomFile>();
 			foreach (var type in types)
 			{
-				if (namespaces.Any(type.Namespace.Contains) && outputAssembly.GetType(type.Name) == null) {
+				if ((namespaces.Any(type.Namespace.Contains) || !namespaces.Any()) && (outputAssembly.GetType(type.Name) == null || outputAssembly == null)) {
     				var files = Directory.GetFileSystemEntries(new FileInfo(basePath).FullName, type.Name + ".cs", SearchOption.AllDirectories);
                     var item = files.FirstOrDefault();
     				if (item != null)

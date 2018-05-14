@@ -13,9 +13,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.3.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="EmptyClass.cs" />
-    <Compile Remove="Proxies.cs" />
-    <Compile Remove="TestModel.cs" />
-  </ItemGroup>
 </Project>

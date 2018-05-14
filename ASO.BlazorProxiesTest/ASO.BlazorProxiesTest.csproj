@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,4 +17,8 @@
   <ItemGroup>
     <ProjectReference Include="..\ASO.BlazorTest.Shared\ASO.BlazorTest.Shared.csproj" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="dotnet $(SolutionDir)\ASO.GenerateBlazorProxies\bin\Debug\netcoreapp2.0\dotnet-blazorproxy.dll -ta $(TargetPath) -tbp $(SolutionDir) -od $(SolutionDir)\ASO.BlazorTest.Shared -oa $(SolutionDir)\ASO.BlazorTest.Shared\bin\Debug\netstandard2.0\ASO.BlazorTest.Shared.dll -n ASO" />
+  </Target>
 </Project>

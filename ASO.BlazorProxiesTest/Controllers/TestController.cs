@@ -22,9 +22,9 @@ namespace ASO.BlazorProxiesTest.Controllers
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public TestModel Get(int id)
         {
-            return "value";
+            return new TestModel() { Id = Guid.NewGuid(), Name = "test" };
         }
 
         // POST api/<controller>
