@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ASO.GenerateBlazorProxies.MVC;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -186,5 +188,17 @@ namespace ASO.GenerateBlazorProxies.Helpers
         {
             return dictionary.TryGetValue(key, out TValue obj) ? obj : default;
         }
-    }
+
+		internal static List<Type> GetTypes(Type type)
+		{
+			var customFiles = new List<Type>();
+            if(!type.Namespace.StartsWith("System", StringComparison.Ordinal))
+			    customFiles.Add(type);
+			foreach (var genericType in type.GetGenericArguments())
+			{
+				customFiles.AddRange(GetTypes(genericType));
+			}
+			return customFiles;
+		}
+	}
 }

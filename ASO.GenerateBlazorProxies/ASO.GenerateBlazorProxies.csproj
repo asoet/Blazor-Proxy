@@ -31,17 +31,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="2.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.0.3" />
+    <PackageReference Include="NDesk.Options" Version="0.2.1" />
   </ItemGroup>
 
 
   <ItemGroup>
-    <ProjectReference Include="..\ASO.BlazorProxiesTest\ASO.BlazorProxiesTest.csproj" />
+    <Compile Remove="Proxies.cs" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="ABPResult.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-  </ItemGroup>
-
 </Project>

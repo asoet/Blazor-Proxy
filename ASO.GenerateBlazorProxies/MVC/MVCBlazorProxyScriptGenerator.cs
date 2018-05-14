@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,8 +17,9 @@ namespace ASO.GenerateBlazorProxies.MVC
         public const string Name = "Blazor";
 
         private bool _isABPResultAdded { get; set; } = false;
+		private List<Type> ReturnTypes { get; set; } = new List<Type>();
 
-        public (string script, bool isABPResultAdded) CreateScript(IApiDescriptionGroupCollectionProvider apiDescriptionGroupCollectionProvider)
+        public ScriptResult CreateScript(IApiDescriptionGroupCollectionProvider apiDescriptionGroupCollectionProvider)
         {
             var script = new StringBuilder();
 
@@ -46,7 +48,7 @@ namespace ASO.GenerateBlazorProxies.MVC
             
             script.AppendLine("     }");
             script.AppendLine("}");
-            return (script.ToString(),_isABPResultAdded);
+			return new ScriptResult { Script = script.ToString(), ReturnTypes = ReturnTypes.Distinct(), AddAbpResult = _isABPResultAdded };
         }
 
         private void GetNameSpaces(StringBuilder script, IEnumerable<ApiDescriptionGroup> model)
@@ -175,6 +177,13 @@ namespace ASO.GenerateBlazorProxies.MVC
                     script.AppendLine("            return;");
                 }
             }
+
+			ReturnTypes.AddRange(BlazorProxyHelper.GetTypes(action.SupportedResponseTypes.First().Type));
+            foreach (var item in action.ParameterDescriptions)
+			{
+				ReturnTypes.AddRange(BlazorProxyHelper.GetTypes(item.ParameterDescriptor.ParameterType));
+			}
+
 
         }
     }
