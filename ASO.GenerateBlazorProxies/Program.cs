@@ -12,6 +12,8 @@ using ASO.GenerateBlazorProxies.Helpers;
 using System.Collections.Generic;
 using System.Reflection;
 using McMaster.Extensions.CommandLineUtils;
+using Microsoft.Extensions.Logging.Console;
+using Microsoft.Extensions.Logging;
 
 namespace ASO.GenerateBlazorProxies
 {
@@ -30,7 +32,7 @@ namespace ASO.GenerateBlazorProxies
 
         public static int Main(string[] args)
         => CommandLineApplication.Execute<Program>(args);
-       
+
 
         private async Task OnExecute()
         {
@@ -60,74 +62,87 @@ namespace ASO.GenerateBlazorProxies
             }
             await GenerateMVC();
         }
-      
+
         public static async Task GenerateMVC()
         {
-			var assembly = AssemblyLoader.LoadFromAssemblyPath(TargetAssembly);
-			var all = assembly.GetTypes();
-			var startUpType = assembly.GetTypes().FirstOrDefault(f=>f.Name == "Startup");
-			if (startUpType == null)
-				return;
-			try
-			{
-				var testServer = new TestServer(new WebHostBuilder().ConfigureServices(services => {
+            Console.WriteLine("Loading target Assembly");
+            var assembly = AssemblyLoader.LoadFromAssemblyPath(TargetAssembly);
+            Console.WriteLine("Loading target Assembly done");
+            var startUpType = assembly.GetTypes().FirstOrDefault(f => f.Name == "Startup");
+            if (startUpType == null)
+            {
+                Console.WriteLine("Loading target Assembly - No startup class found");
+                return;
+            }
+            Console.WriteLine("Loading target Assembly - startup class found");
+            try
+            {
+                Console.WriteLine("Loading target Assembly - Starting testServer");
+                var testServer = new TestServer(new WebHostBuilder().ConfigureServices(services =>
+                {
                     services.TryAddSingleton<IApiDescriptionGroupCollectionProvider, ApiDescriptionGroupCollectionProvider>();
                     services.TryAddEnumerable(
                         ServiceDescriptor.Transient<IApiDescriptionProvider, DefaultApiDescriptionProvider>());
-                 }).UseStartup(startUpType));
+                })
+                 .UseStartup(startUpType));
+                
+                Console.WriteLine("Loading target Assembly - Done starting testServer");
                 var apiModel = testServer.Host.Services.GetService<IApiDescriptionGroupCollectionProvider>();
                 if (apiModel == null)
                 {
+                    Console.WriteLine("Loading target Assembly - No ApiExplorer found");
                     return;
                 }
+                Console.WriteLine("Generating proxies");
                 var blazorGenerator = new MVCBlazorProxyScriptGenerator();
                 var script = blazorGenerator.CreateScript(apiModel);
-                
+
                 Console.WriteLine("Script generated");
                 var proxyFileNameLocation = Environment.CurrentDirectory;
-				if (!string.IsNullOrEmpty(OutputDir))
+                if (!string.IsNullOrEmpty(OutputDir))
                 {
-					proxyFileNameLocation = Path.GetFullPath(OutputDir);
+                    proxyFileNameLocation = Path.GetFullPath(OutputDir);
                 }
                 Console.WriteLine("Path found");
                 var proxyFile = proxyFileNameLocation + "/Proxies.cs";
                 Console.WriteLine($"FileName {proxyFile}");
                 await File.WriteAllTextAsync(proxyFile, script.Script);
-				FindAndCopyCustomFiles(script.ReturnTypes, NamespacesJoined.Split(","), TargetBasePathForFiles);
+                FindAndCopyCustomFiles(script.ReturnTypes, NamespacesJoined.Split(","), TargetBasePathForFiles);
                 Console.WriteLine("Proxy file written");
-				if (script.AddAbpResult)
-					AddABPResult();
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex);
-				Console.ReadKey();
-			}
+                if (script.AddAbpResult)
+                    AddABPResult();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                Console.ReadKey();
+            }
 
         }
 
-		public static void FindAndCopyCustomFiles(IEnumerable<Type> types, IEnumerable<string> namespaces, string basePath)
+        public static void FindAndCopyCustomFiles(IEnumerable<Type> types, IEnumerable<string> namespaces, string basePath)
         {
             Assembly outputAssembly = null;
             if (!string.IsNullOrEmpty(OutputAssembly))
                 outputAssembly = AssemblyLoader.LoadFromAssemblyPath(OutputAssembly);
-			var customFiles = new List<CustomFile>();
-			foreach (var type in types)
-			{
-				if ((namespaces.Any(type.Namespace.Contains) || !namespaces.Any()) && (outputAssembly.GetType(type.Name) == null || outputAssembly == null)) {
-    				var files = Directory.GetFileSystemEntries(new FileInfo(basePath).FullName, type.Name + ".cs", SearchOption.AllDirectories);
+            var customFiles = new List<CustomFile>();
+            foreach (var type in types)
+            {
+                if ((namespaces.Any(type.Namespace.Contains) || !namespaces.Any()) && (outputAssembly.GetType(type.Name) == null || outputAssembly == null))
+                {
+                    var files = Directory.GetFileSystemEntries(new FileInfo(basePath).FullName, type.Name + ".cs", SearchOption.AllDirectories);
                     var item = files.FirstOrDefault();
-    				if (item != null)
-    					File.WriteAllText(Path.Combine(OutputDir, type.Name + ".cs"), File.ReadAllText(item));
-				}
-			}
+                    if (item != null)
+                        File.WriteAllText(Path.Combine(OutputDir, type.Name + ".cs"), File.ReadAllText(item));
+                }
+            }
 
-		}
+        }
 
         public static void AddABPResult()
         {
             var proxyFileNameLocation = Environment.CurrentDirectory;
-			if (!string.IsNullOrEmpty(OutputDir))
+            if (!string.IsNullOrEmpty(OutputDir))
             {
                 proxyFileNameLocation = Path.GetFullPath(OutputDir);
             }

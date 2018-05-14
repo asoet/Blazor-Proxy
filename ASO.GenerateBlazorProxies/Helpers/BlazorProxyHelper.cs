@@ -160,15 +160,12 @@ namespace ASO.GenerateBlazorProxies.Helpers
             {
                 shouldAdd = false;
             }
-
-            var type = Assembly.GetExecutingAssembly().GetTypes().FirstOrDefault(f => f.Name == "AbpServiceBase" && f.Namespace == "Abp");
+            
             //Check if controller is ABP
-            if (type != null && !action.ControllerTypeInfo.IsSubclassOf(type))
+            if (!action.ControllerTypeInfo.IsSubclassOf("AbpServiceBase"))
             {
                 shouldAdd = false; 
             }
-            if (type == null)
-                shouldAdd = false;
 
             //Not found
             return shouldAdd;
@@ -200,5 +197,22 @@ namespace ASO.GenerateBlazorProxies.Helpers
 			}
 			return customFiles;
 		}
-	}
+
+        internal static IEnumerable<Type> GetAllBaseTypes(Type t)
+        {
+            var allTypes = new List<Type>
+            {
+                t
+            };
+            if(t.BaseType != null)
+                allTypes.AddRange(GetAllBaseTypes(t.BaseType));
+            return allTypes;
+        }
+
+        internal static bool IsSubclassOf(this Type targetType, string type)
+        {
+            var all = GetAllBaseTypes(targetType);
+            return all.Any(f => f.Name == type);
+        }
+    }
 }
