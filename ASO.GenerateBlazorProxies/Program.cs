@@ -12,8 +12,6 @@ using ASO.GenerateBlazorProxies.Helpers;
 using System.Collections.Generic;
 using System.Reflection;
 using McMaster.Extensions.CommandLineUtils;
-using Microsoft.Extensions.Logging.Console;
-using Microsoft.Extensions.Logging;
 
 namespace ASO.GenerateBlazorProxies
 {
