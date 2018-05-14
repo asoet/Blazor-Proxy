@@ -32,12 +32,12 @@
 
 
   <ItemGroup>
+  <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.3" />
   <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="2.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.0.3" />
-    <PackageReference Include="NDesk.Options" Version="0.2.1" />
     <PackageReference Include="NuGet.Configuration" Version="4.7.0" />
   </ItemGroup>
 

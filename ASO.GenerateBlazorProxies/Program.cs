@@ -10,50 +10,30 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.TestHost;
 using ASO.GenerateBlazorProxies.Helpers;
 using System.Collections.Generic;
-using NDesk.Options;
 using System.Reflection;
+using McMaster.Extensions.CommandLineUtils;
 
 namespace ASO.GenerateBlazorProxies
 {
     class Program
     {
-		private static string TargetAssembly { get; set; }
-		private static string TargetBasePathForFiles { get; set; }
-		private static string OutputDir { get; set; }
-		private static string OutputAssembly { get; set; }
-		private static string NamespacesJoined { get; set; }
+        [Option(Description = "target assembly path. In this assembly is the startup file.", ShortName = "ta", LongName = "targetassembly")]
+        private static string TargetAssembly { get; set; }
+        [Option(Description = "target base path. this path contains all the required return types to copy with the proxies.", ShortName = "tbp", LongName = "targetbasepath")]
+        private static string TargetBasePathForFiles { get; set; }
+        [Option(Description = "this is the dir to copy the proxies and return types to.", ShortName = "od", LongName = "outputdir")]
+        private static string OutputDir { get; set; }
+        [Option(Description = "this is the assembly to check if return types exists.", ShortName = "oa", LongName = "outputassembly")]
+        private static string OutputAssembly { get; set; }
+        [Option(Description = "the namespaces of the return types. seperate with ','", ShortName = "n", LongName = "namespaces")]
+        private static string NamespacesJoined { get; set; }
 
-        static async System.Threading.Tasks.Task Main(string[] args)
+        public static int Main(string[] args)
+        => CommandLineApplication.Execute<Program>(args);
+       
+
+        private async Task OnExecute()
         {
-			bool show_help = false;
-
-			var p = new OptionSet() {
-				{ "ta|targetassembly=", "target assembly path. In this assembly is the startup file.",
-					v => TargetAssembly = v },
-				{ "tbp|targetbasepath=", "target base path. this path contains all the required return types to copy with the proxies.",
-					v => TargetBasePathForFiles = v },
-                { "od|outputdir=", "this is the dir to copy the proxies and return types to.",
-					v => OutputDir = v },
-				{ "oa|outputassembly=", "this is the assembly to check if return types exists.",
-                    v => OutputAssembly = v },
-                { "n|namespaces=", "the namespaces of the return types. seperate with ','",
-                    v => NamespacesJoined = v },
-                { "h|help",  "show this message and exit",
-                   v => show_help = v != null }
-            };
-
-            List<string> extra;
-            try
-            {
-                extra = p.Parse(args);
-            }
-            catch (OptionException e)
-            {
-                Console.Write("Proxies: ");
-                Console.WriteLine(e.Message);
-                Console.WriteLine("Try `--help' for more information.");
-                return;
-            }
             if (string.IsNullOrEmpty(TargetAssembly))
             {
                 Console.WriteLine("Not targetAssembly found");
