@@ -8,3 +8,4 @@ packages
 Abp.GenerateBlazorProxies/Properties/launchSettings.json
 ASO.GenerateBlazorProxies/Properties/launchSettings.json
 .DS_Store
+ASO.BlazorTest.Shared/Properties/launchSettings.json
