@@ -1,4 +1,4 @@
-# Blazor-Proxy-generator
+ Condition=" '$(Configuration)'=='Debug' "# Blazor-Proxy-generator
 With this project you can create a proxy file for your blazor application using the ASP.NET with or without the [ABP framework ](https://aspnetboilerplate.com/). 
 # Use
 
@@ -7,7 +7,7 @@ With this project you can create a proxy file for your blazor application using 
 2. Add the generateBlazorProxies project as post build in your server project:
 ```
 <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="dotnet blazorproxy -ta $(TargetPath) -tbp $(SolutionDir) -od $(SolutionDir)\Shared\ -oa $(SolutionDir)\Shared\bin\Debug\netstandard2.0\Shared.dll -n ASO" />
+    <Exec Condition=" '$(Configuration)'=='Debug' " Command="dotnet blazorproxy -ta $(TargetPath) -tbp $(SolutionDir) -od $(SolutionDir)\Shared\ -oa $(SolutionDir)\Shared\bin\Debug\netstandard2.0\Shared.dll -n ASO" />
     </Target>
  ```
  
