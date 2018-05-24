@@ -1,4 +1,4 @@
- Condition=" '$(Configuration)'=='Debug' "# Blazor-Proxy-generator
+# Blazor-Proxy-generator
 With this project you can create a proxy file for your blazor application using the ASP.NET with or without the [ABP framework ](https://aspnetboilerplate.com/). 
 # Use
 
