@@ -7,7 +7,7 @@ With this project you can create a proxy file for your blazor application using 
 2. Add the generateBlazorProxies project as post build in your server project (change paths):
 ```
 <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="dotnet blazorproxy -ta $(TargetPath) -tbp $(SolutionDir) -od $(SolutionDir)\Shared\ -oa $(SolutionDir)\Shared\bin\Debug\netstandard2.0\Shared.dll -n ASO" />
+    <Exec Condition=" '$(Configuration)'=='Debug' " Command="dotnet blazorproxy -ta $(TargetPath) -tbp $(SolutionDir) -od $(SolutionDir)\Shared\ -oa $(SolutionDir)\Shared\bin\Debug\netstandard2.0\Shared.dll -n ASO" />
     </Target>
  ```
  
