@@ -43,11 +43,16 @@ namespace ASO.GenerateBlazorProxies.Helpers
                 //Get local nuget cache
                 var settings = Settings.LoadDefaultSettings(null);
                 var nugetCache = SettingsUtility.GetGlobalPackagesFolder(settings);
-
+                
                 IEnumerable<string> foundDlls = Directory.GetFileSystemEntries(new FileInfo(directory).FullName, name.Name + ".dll", SearchOption.AllDirectories);
-                foundDlls = foundDlls.Concat(Directory.GetFileSystemEntries(nugetCache, name.Name + ".dll", SearchOption.AllDirectories).Where(f => (version == null) || f.Contains(version)));
                 if (foundDlls.Any())
                 {
+                    var path = foundDlls.Last();
+                    return context.LoadFromAssemblyPath(path);
+                }
+                else if (Directory.GetFileSystemEntries(nugetCache, name.Name + ".dll", SearchOption.AllDirectories).Where(f => (version == null) || f.Contains(version)).Any())
+                {
+                    foundDlls = Directory.GetFileSystemEntries(nugetCache, name.Name + ".dll", SearchOption.AllDirectories).Where(f => (version == null) || f.Contains(version));
                     var path = foundDlls.Last();
                     return context.LoadFromAssemblyPath(path);
                 }
@@ -57,7 +62,7 @@ namespace ASO.GenerateBlazorProxies.Helpers
                     if (dlls.Any())
                         return context.LoadFromAssemblyPath(dlls.Last());
                 }
-				return context.LoadFromAssemblyName(name);
+                return context.LoadFromAssemblyName(name);
             };
             return assembly;
         }

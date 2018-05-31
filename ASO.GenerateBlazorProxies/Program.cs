@@ -12,6 +12,7 @@ using ASO.GenerateBlazorProxies.Helpers;
 using System.Collections.Generic;
 using System.Reflection;
 using McMaster.Extensions.CommandLineUtils;
+using System.Text.RegularExpressions;
 
 namespace ASO.GenerateBlazorProxies
 {
@@ -76,11 +77,11 @@ namespace ASO.GenerateBlazorProxies
             try
             {
                 Console.WriteLine("Loading target Assembly - Starting testServer");
-                var testServer = new TestServer(new WebHostBuilder().ConfigureServices(services =>
-                {
+                var testServer = new TestServer(new WebHostBuilder().ConfigureServices(services => {
                     services.TryAddSingleton<IApiDescriptionGroupCollectionProvider, ApiDescriptionGroupCollectionProvider>();
                     services.TryAddEnumerable(
                         ServiceDescriptor.Transient<IApiDescriptionProvider, DefaultApiDescriptionProvider>());
+                    
                 })
                  .UseStartup(startUpType));
                 
@@ -112,6 +113,7 @@ namespace ASO.GenerateBlazorProxies
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Exception:");
                 Console.WriteLine(ex);
                 Console.ReadKey();
             }
@@ -130,8 +132,10 @@ namespace ASO.GenerateBlazorProxies
                 {
                     var files = Directory.GetFileSystemEntries(new FileInfo(basePath).FullName, type.Name + ".cs", SearchOption.AllDirectories);
                     var item = files.FirstOrDefault();
+                    string regex = "(\\[.*\\])";
+                    string output = Regex.Replace(item, regex, "");
                     if (item != null)
-                        File.WriteAllText(Path.Combine(OutputDir, type.Name + ".cs"), File.ReadAllText(item));
+                        File.WriteAllText(Path.Combine(OutputDir, type.Name + ".cs"), File.ReadAllText(output));
                 }
             }
 

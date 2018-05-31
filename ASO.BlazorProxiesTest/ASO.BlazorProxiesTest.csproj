@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,8 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="0.3.0" />
+    <DotNetCliToolReference Include="DotnetBlazorProxy" Version="0.1.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +20,6 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="dotnet $(SolutionDir)\ASO.GenerateBlazorProxies\bin\Debug\netcoreapp2.0\dotnet-blazorproxy.dll -ta $(TargetPath) -tbp $(SolutionDir) -od $(SolutionDir)\ASO.BlazorTest.Shared -oa $(SolutionDir)\ASO.BlazorTest.Shared\bin\Debug\netstandard2.0\ASO.BlazorTest.Shared.dll -n ASO" />
+    <Exec Command="dotnet blazorproxy -ta $(TargetPath) -tbp $(SolutionDir) -od $(SolutionDir)\ASO.BlazorTest.Shared -oa $(SolutionDir)\ASO.BlazorTest.Shared\bin\Debug\netstandard2.0\ASO.BlazorTest.Shared.dll -n ASO" />
   </Target>
 </Project>

@@ -1,10 +1,10 @@
 # Blazor-Proxy-generator
-With this project you can create a proxy file for your blazor application using the ASP.NET with or without the [ABP framework ](https://aspnetboilerplate.com/). 
+With this project you can create a proxy file for your blazor application using the ASP.NET works with the [ABP framework ](https://aspnetboilerplate.com/). 
 # Use
 
 
-1. Add ```<DotNetCliToolReference Include="DotnetBlazorProxy" Version="0.1.2" />``` in your .csproj.
-2. Add the generateBlazorProxies project as post build in your server project:
+1. Add ```<DotNetCliToolReference Include="DotnetBlazorProxy" Version="0.1.5" />``` in your .csproj.
+2. Add the generateBlazorProxies project as post build in your server project (change paths):
 ```
 <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="dotnet blazorproxy -ta $(TargetPath) -tbp $(SolutionDir) -od $(SolutionDir)\Shared\ -oa $(SolutionDir)\Shared\bin\Debug\netstandard2.0\Shared.dll -n ASO" />
@@ -18,5 +18,5 @@ arguments:
 * -od output path. All the files will be copied to this path. For example the shared library.
 * -oa this is the assembly (dll) of the output project, to check if the return/parameter type already exists. 
 
-When .NET core 2.1 is released I will release a global tool.
+This is also a dotnet global tool.
 
