@@ -3,11 +3,11 @@ With this project you can create a proxy file for your blazor application using 
 # Use
 
 
-1. Add ```<DotNetCliToolReference Include="DotnetBlazorProxy" Version="0.1.5" />``` in your .csproj.
+1. run ```dotnet tool install --global DotnetBlazorProxy --version 0.1.5```.
 2. Add the generateBlazorProxies project as post build in your server project (change paths):
 ```
 <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Condition=" '$(Configuration)'=='Debug' " Command="dotnet blazorproxy -ta $(TargetPath) -tbp $(SolutionDir) -od $(SolutionDir)\Shared\ -oa $(SolutionDir)\Shared\bin\Debug\netstandard2.0\Shared.dll -n ASO" />
+    <Exec Condition=" '$(Configuration)'=='Debug' " Command="blazorproxy -ta $(TargetPath) -tbp $(SolutionDir) -od $(SolutionDir)\Shared\ -oa $(SolutionDir)\Shared\bin\Debug\netstandard2.0\Shared.dll -n ASO" />
     </Target>
  ```
  
@@ -18,5 +18,5 @@ arguments:
 * -od output path. All the files will be copied to this path. For example the shared library.
 * -oa this is the assembly (dll) of the output project, to check if the return/parameter type already exists. 
 
-This is also a dotnet global tool.
+This is a dotnet global tool.
 

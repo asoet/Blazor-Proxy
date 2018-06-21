@@ -12,7 +12,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="0.3.0" />
-    <DotNetCliToolReference Include="DotnetBlazorProxy" Version="0.1.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +19,6 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="dotnet blazorproxy -ta $(TargetPath) -tbp $(SolutionDir) -od $(SolutionDir)\ASO.BlazorTest.Shared -oa $(SolutionDir)\ASO.BlazorTest.Shared\bin\Debug\netstandard2.0\ASO.BlazorTest.Shared.dll -n ASO" />
+    <Exec Command="blazorproxy -ta $(TargetPath) -tbp $(SolutionDir) -od $(SolutionDir)\ASO.BlazorTest.Shared -oa $(SolutionDir)\ASO.BlazorTest.Shared\bin\Debug\netstandard2.0\ASO.BlazorTest.Shared.dll -n ASO" />
   </Target>
 </Project>

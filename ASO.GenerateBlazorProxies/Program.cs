@@ -82,8 +82,9 @@ namespace ASO.GenerateBlazorProxies
                     services.TryAddEnumerable(
                         ServiceDescriptor.Transient<IApiDescriptionProvider, DefaultApiDescriptionProvider>());
                     
-                })
-                 .UseStartup(startUpType));
+                }).UseSolutionRelativeContentRoot(Directory.GetDirectoryRoot(TargetAssembly))
+				.UseContentRoot(Directory.GetDirectoryRoot(TargetAssembly))
+				 .UseStartup(startUpType));
                 
                 Console.WriteLine("Loading target Assembly - Done starting testServer");
                 var apiModel = testServer.Host.Services.GetService<IApiDescriptionGroupCollectionProvider>();
