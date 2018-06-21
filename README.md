@@ -3,7 +3,7 @@ With this project you can create a proxy file for your blazor application using 
 # Use
 
 
-1. run ```dotnet tool install --global DotnetBlazorProxy --version 0.1.5```.
+1. run ```dotnet tool install --global DotnetBlazorProxy --version 0.1.6```.
 2. Add the generateBlazorProxies project as post build in your server project (change paths):
 ```
 <Target Name="PostBuild" AfterTargets="PostBuildEvent">
